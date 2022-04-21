@@ -1,5 +1,5 @@
 import os
 
 def get_path() -> str:
-    return os.path.dirname(os.path.abspath(__filename__))
+    return os.path.dirname(os.path.abspath(__file__))
 

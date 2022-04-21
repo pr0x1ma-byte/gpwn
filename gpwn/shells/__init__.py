@@ -30,6 +30,7 @@ class C(Shell):
         port = self.port
         address = "\"%s\"" % self.address
         path = os.path.join(get_path(), 'shell.c')
+        logger.debug("compiling with arguments: %s %s %s", path, address, port)
         pipe = Popen(["gcc", path, "-o", "shell", "-DREMOTE_ADDR=%s" % address, "-DREMOTE_PORT=%s" % port,
                       "-Wno-implicit-function-declaration"])
 
