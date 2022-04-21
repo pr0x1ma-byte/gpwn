@@ -1,0 +1,3 @@
+class ShellError(RuntimeError):
+    pass
+
