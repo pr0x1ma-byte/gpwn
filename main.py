@@ -8,7 +8,7 @@ parser.add_argument('--debug', dest='debug', default=False, action='store_true',
 
 subparser = parser.add_subparsers(dest='shell', help='shell sub-command help')
 shell_parser = subparser.add_parser('shell', help='shell help')
-shell_parser.add_argument('-t', dest='shell_type', choices=['bind', 'reverse'], help='specify shell behavior',
+shell_parser.add_argument('-t', dest='shell_type', choices=['bind', 'reverse', 'cmd'], help='specify shell behavior',
                           required=True)
 shell_parser.add_argument('-f', dest='shell_format', choices=['binary', 'php'], help='specify shell output format',
                           required=True)

