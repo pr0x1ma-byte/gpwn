@@ -3,6 +3,7 @@ from gpwn.shells import C, Php
 
 class ShellGenerator:
     def __init__(self, args):
+        self.args = args
         self.port = args.shell_port
         self.address = args.shell_address
 
@@ -19,6 +20,6 @@ class ShellGenerator:
     def get_shell(self):
         shell = C(address=self.address, port=self.port)
         if self.format == 'php':
-            shell = Php(address=self.address, port=self.port)
+            shell = Php(address=self.address, port=self.port, shell=self.args.shell_loc)
 
         return shell

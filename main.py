@@ -12,6 +12,7 @@ shell_parser.add_argument('-t', dest='shell_type', choices=['bind', 'reverse'], 
                           required=True)
 shell_parser.add_argument('-f', dest='shell_format', choices=['binary', 'php'], help='specify shell output format',
                           required=True)
+shell_parser.add_argument('-s', dest='shell_loc', type=str, default="/bin/sh", help='specify shell location',)
 
 shell_parser.add_argument('-a', dest='shell_address', type=str, default='127.0.0.1', help="remote address or host")
 shell_parser.add_argument('-p', dest='shell_port', type=int, default='8080', help="remote port")
