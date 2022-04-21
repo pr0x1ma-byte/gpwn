@@ -18,7 +18,7 @@ class ShellGenerator:
             shell.generate_reverse_shell()
 
     def get_shell(self):
-        shell = C(address=self.address, port=self.port)
+        shell = C(address=self.address, port=self.port, shell=self.args.shell_loc)
         if self.format == 'php':
             shell = Php(address=self.address, port=self.port, shell=self.args.shell_loc)
 

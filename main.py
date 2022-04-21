@@ -18,6 +18,7 @@ shell_parser.add_argument('-a', dest='shell_address', type=str, default='127.0.0
 shell_parser.add_argument('-p', dest='shell_port', type=int, default='8080', help="remote port")
 
 args = parser.parse_args()
+level = 'INFO'
 if args.debug:
     level = 'DEBUG'
 configure_logging(level)
