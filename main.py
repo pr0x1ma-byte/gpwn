@@ -16,6 +16,7 @@ shell_parser.add_argument('-s', dest='shell_loc', type=str, default="/bin/sh", h
 
 shell_parser.add_argument('-a', dest='shell_address', type=str, default='127.0.0.1', help="remote address or host")
 shell_parser.add_argument('-p', dest='shell_port', type=int, default='8080', help="remote port")
+shell_parser.add_argument('-o', dest='shell_print', action="store_true", help="print common variants")
 
 args = parser.parse_args()
 level = 'INFO'
@@ -30,3 +31,5 @@ if __name__ == '__main__':
     if args.shell is not None:
         logger.debug("creating a %s %s shell", args.shell_format, args.shell_type)
         ShellGenerator(args).generate()
+
+    logger.info('nothing else to do')

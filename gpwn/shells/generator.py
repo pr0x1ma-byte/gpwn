@@ -19,6 +19,9 @@ class ShellGenerator:
         if self.type == 'cmd':
             shell.generate_cmd_shell()
 
+        if self.args.shell_print:
+            shell.print()
+
     def get_shell(self):
         shell = C(address=self.address, port=self.port, shell=self.args.shell_loc)
         if self.format == 'php':
